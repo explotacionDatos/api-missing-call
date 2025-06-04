@@ -14,7 +14,7 @@ services:
     links:
       - mysql_avisa:mysql_avisa
     networks:
-      - nginxproxymanager_default
+      - nginxproxymanager_default_avisa
 
   myadmin:
     image: phpmyadmin
@@ -28,7 +28,7 @@ services:
     links:
       - mysql_avisa:mysql_avisa
     networks:
-      - nginxproxymanager_default
+      - nginxproxymanager_default_avisa
 
   mysql_avisa:
     container_name: missing_call_api-avisacordoba-mysql
@@ -42,16 +42,16 @@ services:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD} 
     ports:
-      - ${DB_PORT}:3306
+      - ${DB_PORT}:3308
     volumes:
       - db_cordoba:/var/lib/mysql
     networks:
-      - nginxproxymanager_default
+      - nginxproxymanager_default_avisa
 
 volumes:
   www:
   db_cordoba:
 
 networks:
-  nginxproxymanager_default:
+  nginxproxymanager_default_avisa:
     external: true
