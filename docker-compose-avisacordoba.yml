@@ -54,4 +54,5 @@ volumes:
 
 networks:
   nginxproxymanager_default_avisa:
-    external: true
+    driver: bridge
+    #external: true
