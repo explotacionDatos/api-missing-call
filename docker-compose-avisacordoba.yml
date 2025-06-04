@@ -22,7 +22,7 @@ services:
     env_file: stack.env
     restart: always
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: ${PM_HOST}
     ports:
       - ${PHPMYADMIN_LOCAL_PORT}:80
     links:
@@ -30,7 +30,7 @@ services:
     networks:
       - nginxproxymanager_default
 
-  mysql:
+  mysql_avisa:
     container_name: missing_call_api-avisacordoba-mysql
     image: mysql:latest
     env_file: stack.env
