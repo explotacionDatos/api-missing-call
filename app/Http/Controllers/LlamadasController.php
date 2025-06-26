@@ -509,14 +509,6 @@ class LlamadasController extends Controller
                 'password' => $user->passwordpbx,
             ];
 
-
-            // $datos = "hala";
-
-            // $envioID = 'api' . $realizada->id_llamada_realizada;
-
-            // return response()->json(['datos' => $datos, 'state' => $envioID]);
-
-
             $response = Http::withToken($res->token)
                 ->post($res->url . '/callback', $formulario);
 
