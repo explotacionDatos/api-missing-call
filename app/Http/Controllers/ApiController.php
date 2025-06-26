@@ -49,6 +49,7 @@ class ApiController extends Controller
 
     public function registerCall(Request $request)
     {
+        Log::info($request->all());
 
         $validator = Validator::make($request->all(), [
             'id_llamada' => 'required',
@@ -68,7 +69,7 @@ class ApiController extends Controller
             return response()->json(['error' => $validator->errors()], 400);
         }
 
-        Log::info($request->all());
+
 
 
         $llamada = new Llamadas();
