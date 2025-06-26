@@ -1,0 +1,51 @@
+services:
+  app:
+    container_name: missing_call_api-avisacordoba
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: stack.env
+    ports:
+      - ${PHP_LOCAL_PORT}:${PHP_DOCKER_PORT}
+    volumes:
+      - www:/var/www
+    depends_on:
+      - db
+    links:
+      - db:db
+    networks:
+      - nginxproxymanager_default
+
+  myadmin:
+    image: phpmyadmin
+    container_name: missing_call_api-avisacordoba-php
+    env_file: stack.env
+    restart: always
+    environment:
+      PMA_HOST: db
+      # MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - ${PHPMYADMIN_LOCAL_PORT}:80
+    links:
+      - db:db
+    networks:
+      - nginxproxymanager_default
+  db:
+     container_name: missing_call_api-avisacordoba-mysql
+     image: mysql:latest
+     env_file: stack.env
+     platform: linux/x86_64
+     restart: always
+     ports:
+       - $DB_PORT:$DB_PORT
+     volumes:
+       - db:/var/lib/mysql
+     networks:
+       - nginxproxymanager_default
+
+volumes:
+  www:
+  db:
+networks:
+  nginxproxymanager_default:
+    external: true
