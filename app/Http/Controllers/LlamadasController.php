@@ -14,6 +14,7 @@ use App\User;
 use App\Cola;
 use App\configuracion;
 use App\userDepartamentos;
+use Illuminate\Support\Facades\Log;
 
 
 
@@ -266,6 +267,21 @@ class LlamadasController extends Controller
         $ids_a_procesar = [];
 
         // Caso 1: Si se enviaron IDs específicos (aunque sea array vacío)
+        // if ($res->has('ids')) {
+        //     if (is_array($res->ids) && !empty($res->ids)) {
+        //         // Si hay IDs en el array, procesar esos IDs más el principal
+        //         $ids_a_procesar = $res->ids;
+        //         if (!in_array($llamada->id_llamada_estado, $ids_a_procesar)) {
+        //             $ids_a_procesar[] = $llamada->id_llamada_estado;
+        //         }
+        //         $llamadas_a_procesar = Llamadas::whereIn('id_llamada_estado', $ids_a_procesar)->get();
+        //         Log::info('Procesando llamadas con IDs específicos', ['ids' => $ids_a_procesar]);
+        //     } else {
+        //         // Si el array de IDs está vacío, pasar al siguiente caso
+        //         goto check_group;
+        //     }
+        // }
+
         if ($res->has('ids')) {
             if (is_array($res->ids) && !empty($res->ids)) {
                 // Si hay IDs en el array, procesar esos IDs más el principal
@@ -274,22 +290,25 @@ class LlamadasController extends Controller
                     $ids_a_procesar[] = $llamada->id_llamada_estado;
                 }
                 $llamadas_a_procesar = Llamadas::whereIn('id_llamada_estado', $ids_a_procesar)->get();
-                \Log::info('Procesando llamadas con IDs específicos', ['ids' => $ids_a_procesar]);
+                Log::info('Procesando llamadas con IDs específicos', ['ids' => $ids_a_procesar]);
             } else {
-                // Si el array de IDs está vacío, pasar al siguiente caso
-                goto check_group;
+                // Si el array está vacío, solo procesar la llamada individual
+                $llamadas_a_procesar = [$llamada];
+                Log::info('Procesando llamada individual (ids vacío)', ['id' => $llamada->id_llamada_estado]);
             }
         }
+
+
         // Caso 2: Llamada con grupo tradicional (procesar todo el grupo)
         elseif ($llamada->grupo_id) {
             check_group:
             $llamadas_a_procesar = Llamadas::where('grupo_id', $llamada->grupo_id)->get();
-            \Log::info('Procesando grupo tradicional', ['grupo_id' => $llamada->grupo_id]);
+            Log::info('Procesando grupo tradicional', ['grupo_id' => $llamada->grupo_id]);
         }
         // Caso 3: Llamada individual
         else {
             $llamadas_a_procesar = [$llamada];
-            \Log::info('Procesando llamada individual', ['id' => $llamada->id_llamada_estado]);
+            Log::info('Procesando llamada individual', ['id' => $llamada->id_llamada_estado]);
         }
 
         // Procesar todas las llamadas
